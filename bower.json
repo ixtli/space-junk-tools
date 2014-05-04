@@ -1,0 +1,30 @@
+{
+  "name": "space-junk-tools",
+  "version": "0.0.1",
+  "authors": [
+    "ixtli <christophergalardi@gmail.com>"
+  ],
+  "description": "tools for the space junk engine",
+  "main": "src/main.js",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "tools"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "requirejs": "~2.1.11",
+    "bootstrap": "~3.1.1",
+    "rsvp": "~3.0.6",
+    "lodash-amd": "~2.4.1"
+  }
+}

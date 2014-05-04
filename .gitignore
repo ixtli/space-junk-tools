@@ -1,0 +1,12 @@
+.DS_Store
+.DS_store
+*.png
+*.o
+*.a
+*.pyc
+*.jpg
+*.jpeg
+tags
+*.swp
+bower_components
+node_modules
