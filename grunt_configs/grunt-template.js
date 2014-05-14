@@ -4,7 +4,7 @@
  * Configuration for grunt-tempalte
  * @type {Object}
  */
-modules.exports = {
+module.exports = {
 
 	template: {
 		index: {
@@ -19,10 +19,12 @@ modules.exports = {
 				}
 			},
 
-			files: {
-				src: 'index.tpl.html',
-				dest: 'index.html'
-			}
+			files: [
+				{
+					src: './index.tpl.html',
+					dest: './index.html'
+				}
+			]
 		}
 	}
 
