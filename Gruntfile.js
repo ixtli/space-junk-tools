@@ -8,14 +8,24 @@
  */
 module.exports = function(grunt)
 {
-	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-contrib-less');
-	grunt.loadNpmTasks('grunt-contrib-connect');
-	grunt.loadNpmTasks('grunt-template');
-	grunt.loadNpmTasks('grunt-http');
+	// List of active modules, to be loaded. Comment them out to remove.
+	var moduleNames = [
+		'grunt-contrib-watch',
+		'grunt-contrib-less',
+		'grunt-contrib-connect'
+		// 'grunt-template'
+		// 'grunt-http'
+	];
 
+	var moduleCount = moduleNames.length;
+
+	// Load plugins listed in exports
+	moduleNames.forEach(grunt.loadNpmTasks, grunt);
+
+	// As of recent versions of grunt, you require this just like anything else
 	var _ = require('lodash');
 
+	// This is sometimes useful.
 	var pkg = grunt.file.readJSON('package.json');
 
 	/**
@@ -27,19 +37,29 @@ module.exports = function(grunt)
 	var processConfigurationFiles = function()
 	{
 		var fullConfig = {};
-		var files = grunt.file.expand('./grunt_configs/*.js');
-		var count = files.length;
-		for (var i = 0; i < count; i++)
+		var basePath = './grunt_configs/';
+		for (var i = 0; i < moduleCount; i++)
 		{
-			_.assign(fullConfig, require(files[i]));
+			_.assign(fullConfig, require(basePath + moduleNames[i] + '.js'));
 		}
 
 		return fullConfig;
 	};
 
+	// The master task configuration
 	var taskConfig = processConfigurationFiles();
 
+	// Initialize grunt
 	grunt.initConfig(_.assign(taskConfig, pkg));
+
+	/**
+	 * Register the config loading as a separate task
+	 */
+	grunt.registerTask('reloadConfigs', 'reload config files', function(env)
+	{
+		var path = './grunt_configs/' + env;
+		grunt.config.init(require(path));
+	});
 
 	/**
 	 * In order to make it safe to just compile or copy *only* what was changed,
@@ -50,9 +70,16 @@ module.exports = function(grunt)
 	 */
 	grunt.renameTask('watch', 'delta');
 	grunt.registerTask('watch', [
-		// 'build',
+		'build',
 		'connect:dev_server',
 		'delta'
+	]);
+
+	/**
+	 * The big build task
+	 */
+	grunt.registerTask('build', [
+		'less'
 	]);
 
 	grunt.registerTask('default', ['watch']);

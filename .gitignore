@@ -10,3 +10,4 @@ tags
 *.swp
 bower_components
 node_modules
+assets/

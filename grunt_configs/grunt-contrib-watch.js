@@ -17,16 +17,14 @@ module.exports = {
 			livereload: true
 		},
 
-		/**
-		 * When the Gruntfile changes, we just want to lint it. In fact, when
-		 * your Gruntfile changes, it will automatically be reloaded!
-		 */
-		gruntfile: {
-			files: 'Gruntfile.js',
-			tasks: ['jshint:gruntfile'],
-			options: {
-				livereload: false
-			}
+		configs: {
+			files: './grunt_configs/*.js',
+			tasks: ['reloadConfigs']
+		},
+
+		less: {
+			files: './less/*.less',
+			tasks: ['less']
 		}
 	}
 
