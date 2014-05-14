@@ -1,5 +1,6 @@
 
-define(['jquery', 'rsvp', 'lodash'], function($, RSVP, _) {
+define(['jquery', 'rsvp', 'lodash', 'ace'], function($, RSVP, _, ace)
+{
 
 'use strict';
 
@@ -12,6 +13,16 @@ function SpaceJunk()
 {
 
 }
+
+SpaceJunk.prototype.stringOfByteLength = function(len)
+{
+	var ret = '';
+	for (var i = 0; i < len; i++)
+	{
+		ret += 'x';
+	}
+	return ret;
+};
 
 
 /**
@@ -26,23 +37,23 @@ SpaceJunk.prototype.init = function()
 	socket.onopen = function(evt)
 	{
 		console.log('opened, sending response...');
-		socket.send('Hello, world!');
-	}
+		socket.send(SpaceJunk.prototype.stringOfByteLength(2975));
+	};
 
 	socket.onclose = function(evt)
 	{
 		console.log('closed!');
-	}
+	};
 
 	socket.onmessage = function(evt)
 	{
 		console.log('got a message: ' + evt.data);
-	}
+	};
 
 	socket.onerror = function(evt)
 	{
 		console.log('error! ' + evt.data);
-	}
+	};
 
 	return true;
 };

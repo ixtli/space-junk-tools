@@ -3,6 +3,7 @@ requirejs.config({
 
 	packages: [
 		{ name: 'lodash', location: '../bower_components/lodash-amd/modern' },
+		{ name: 'ace', location: '../bower_components/ace/lib/ace', main: 'ace' }
 	],
 
 	paths: {
