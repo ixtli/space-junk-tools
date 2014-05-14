@@ -1,0 +1,33 @@
+{
+  "name": "space-junk-tools",
+  "version": "0.0.0",
+  "description": "tools to configure the space junk engine",
+  "main": "src/main.js",
+  "dependencies": {
+    "grunt": "~0.4.5"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ixtli/space-junk-tools.git"
+  },
+  "keywords": [
+    "3d",
+    "engine",
+    "space",
+    "junk",
+    "javascript",
+    "grunt"
+  ],
+  "author": "chris galardi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ixtli/space-junk-tools/issues"
+  },
+  "homepage": "https://github.com/ixtli/space-junk-tools"
+}
