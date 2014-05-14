@@ -3,8 +3,7 @@
 
 /**
  * Top level grunt configuration
- * @param  {[type]} grunt [description]
- * @return {[type]}       [description]
+ * @param  {Grunt} grunt the top level grunt object provided by the lib
  */
 module.exports = function(grunt)
 {
@@ -12,9 +11,8 @@ module.exports = function(grunt)
 	var moduleNames = [
 		'grunt-contrib-watch',
 		'grunt-contrib-less',
-		'grunt-contrib-connect'
-		// 'grunt-template'
-		// 'grunt-http'
+		'grunt-contrib-connect',
+		'grunt-template'
 	];
 
 	var moduleCount = moduleNames.length;
@@ -79,7 +77,8 @@ module.exports = function(grunt)
 	 * The big build task
 	 */
 	grunt.registerTask('build', [
-		'less'
+		'less',
+		'template:index'
 	]);
 
 	grunt.registerTask('default', ['watch']);
