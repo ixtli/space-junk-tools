@@ -1,8 +1,12 @@
 
-define(['jquery', 'rsvp', 'lodash', 'ace'], function($, RSVP, _, ace)
+define(function(require)
 {
 
 'use strict';
+
+
+var $ = require('jquery');
+var ace = require('ace/ace');
 
 
 /**
@@ -31,6 +35,13 @@ SpaceJunk.prototype.stringOfByteLength = function(len)
  */
 SpaceJunk.prototype.init = function()
 {
+
+	var editor = ace.edit($('#editor')[0]);
+	editor.setTheme('ace/theme/monokai');
+	var session = editor.getSession();
+	session.setMode('ace/mode/javascript');
+	session.setUseSoftTabs(false);
+	editor.setShowInvisibles(true);
 
 	var socket = new WebSocket('ws://localhost:9038');
 

@@ -17,6 +17,11 @@ module.exports = {
 			livereload: true
 		},
 
+		html: {
+			files: './*.tpl.html',
+			tasks: ['template']
+		},
+
 		configs: {
 			files: './grunt_configs/*.js',
 			tasks: ['reloadConfigs']
@@ -25,6 +30,11 @@ module.exports = {
 		less: {
 			files: './less/*.less',
 			tasks: ['less']
+		},
+
+		js: {
+			files: './src/*.js',
+			tasks: []
 		}
 	}
 
