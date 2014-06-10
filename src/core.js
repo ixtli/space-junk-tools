@@ -4,10 +4,11 @@ define(function(require)
 
 'use strict';
 
-
 var $ = require('jquery');
+
 var ace = require('ace/ace');
 
+var RSVP = require('rsvp');
 
 /**
  * Top level object constructor
@@ -15,18 +16,38 @@ var ace = require('ace/ace');
  */
 function SpaceJunk()
 {
+	var _editor = ace.edit('editor');
 
+	this.editor = function()
+	{
+		return _editor;
+	};
 }
 
-SpaceJunk.prototype.stringOfByteLength = function(len)
+
+SpaceJunk.prototype.setFile = function(name)
 {
-	var ret = '';
-	for (var i = 0; i < len; i++)
+	var self = this;
+
+	return new RSVP.Promise(function(resolve, reject)
 	{
-		ret += 'x';
-	}
-	return ret;
+		$.ajax({
+			url: 'src/' + name + '.js',
+			dataType: 'text',
+			error: reject,
+			success: resolve,
+			cache: false
+		});
+	}).then(function(result)
+	{
+		self.editor().setValue(result);
+		$('#editor-title').html(name);
+		return RSVP.Promise.resolve();
+	});
 };
+
+
+SpaceJunk.prototype.sendValue
 
 
 /**
@@ -35,20 +56,13 @@ SpaceJunk.prototype.stringOfByteLength = function(len)
  */
 SpaceJunk.prototype.init = function()
 {
+	var url = 'ws://localhost:9038';
 
-	var editor = ace.edit($('#editor')[0]);
-	editor.setTheme('ace/theme/monokai');
-	var session = editor.getSession();
-	session.setMode('ace/mode/javascript');
-	session.setUseSoftTabs(false);
-	editor.setShowInvisibles(true);
-
-	var socket = new WebSocket('ws://localhost:9038');
+	var socket = new WebSocket(url);
 
 	socket.onopen = function(evt)
 	{
-		console.log('opened, sending response...');
-		socket.send(SpaceJunk.prototype.stringOfByteLength(2975));
+		console.log('opened!');
 	};
 
 	socket.onclose = function(evt)
@@ -65,6 +79,40 @@ SpaceJunk.prototype.init = function()
 	{
 		console.log('error! ' + evt.data);
 	};
+
+	var edit = this.editor();
+
+	edit.setTheme('ace/theme/monokai');
+	edit.getSession().setMode('ace/mode/javascript');
+
+	this.setFile('sample');
+
+	var statusContainer = $('#editor-status');
+
+	statusContainer.append($('<button>').html('send').on('click', function()
+	{
+		var val = edit.getValue();
+
+		if (val)
+		{
+			socket.send(val);
+		} else {
+			console.warn('Not sending empty val.');
+		}
+
+	}));
+
+	statusContainer.append($('<button>').html('restart').on('click', function()
+	{
+		socket.close();
+		socket = new WebSocket(url);
+
+		socket.onerror = function(evt)
+		{
+			console.error(evt);
+			console.log(evt.data);
+		};
+	}));
 
 	return true;
 };

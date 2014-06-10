@@ -22,11 +22,6 @@ module.exports = {
 			tasks: ['template']
 		},
 
-		configs: {
-			files: './grunt_configs/*.js',
-			tasks: ['reloadConfigs']
-		},
-
 		less: {
 			files: './less/*.less',
 			tasks: ['less']

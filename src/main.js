@@ -1,23 +1,13 @@
 
-requirejs.config({
-
-	packages: [
-		{ name: 'lodash', location: '../bower_components/lodash-amd/modern' }
-	],
-
-	paths: {
-		bootstrap: '../bower_components/bootstrap/dist/js/bootstrap',
-		rsvp: '../bower_components/rsvp/rsvp.amd',
-		jquery: '../jquery/dist/jquery',
-		ace: '../bower_components/ace/lib/ace'
-	}
-
-});
-
-require(['core'], function(SpaceJunk)
+require(['config'], function(config)
 {
+	// Configure requirejs
+	requirejs.config(config);
 
-	window.sj = new SpaceJunk();
-	window.sj.init();
-
+	// Initialize the application
+	require(['core'], function(SpaceJunk)
+	{
+		window.sj = new SpaceJunk();
+		window.sj.init();
+	});
 });

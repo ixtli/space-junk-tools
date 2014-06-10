@@ -7,24 +7,21 @@
  */
 module.exports = function(grunt)
 {
-	// List of active modules, to be loaded. Comment them out to remove.
-	var moduleNames = [
-		'grunt-contrib-watch',
-		'grunt-contrib-less',
-		'grunt-contrib-connect',
-		'grunt-template'
-	];
+	// This is sometimes useful.
+	var pkg = grunt.file.readJSON('package.json');
 
-	var moduleCount = moduleNames.length;
+	// Get the list of grunt modules from package.json's devDeps.
+	var modules = Object.keys(pkg.devDependencies);
+	var moduleCount = modules.length;
 
 	// Load plugins listed in exports
-	moduleNames.forEach(grunt.loadNpmTasks, grunt);
+	modules.forEach(grunt.loadNpmTasks, grunt);
 
 	// As of recent versions of grunt, you require this just like anything else
 	var _ = require('lodash');
 
-	// This is sometimes useful.
-	var pkg = grunt.file.readJSON('package.json');
+	// Directory that contains devDependency task configurations
+	var configBasePath = './grunt_configs/';
 
 	/**
 	 * Itterate through all files in the grunt_configs directory, read them
@@ -34,14 +31,14 @@ module.exports = function(grunt)
 	 */
 	var processConfigurationFiles = function()
 	{
-		var fullConfig = {};
-		var basePath = './grunt_configs/';
+		var ret = {};
+
 		for (var i = 0; i < moduleCount; i++)
 		{
-			_.assign(fullConfig, require(basePath + moduleNames[i] + '.js'));
+			_.assign(ret, require(configBasePath + modules[i] + '.js'));
 		}
 
-		return fullConfig;
+		return ret;
 	};
 
 	// The master task configuration
@@ -49,15 +46,6 @@ module.exports = function(grunt)
 
 	// Initialize grunt
 	grunt.initConfig(_.assign(taskConfig, pkg));
-
-	/**
-	 * Register the config loading as a separate task
-	 */
-	grunt.registerTask('reloadConfigs', 'reload config files', function(env)
-	{
-		var path = './grunt_configs/' + env;
-		grunt.config.init(require(path));
-	});
 
 	/**
 	 * In order to make it safe to just compile or copy *only* what was changed,
@@ -73,13 +61,12 @@ module.exports = function(grunt)
 		'delta'
 	]);
 
-	/**
-	 * The big build task
-	 */
+	// The big build task
 	grunt.registerTask('build', [
 		'less',
 		'template:index'
 	]);
 
+	// Seems to be the convention
 	grunt.registerTask('default', ['watch']);
 };
