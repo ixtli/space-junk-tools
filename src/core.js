@@ -8,6 +8,8 @@ var $ = require('jquery');
 
 var ace = require('ace/ace');
 
+var Connection = require('connection');
+
 var RSVP = require('rsvp');
 
 /**
@@ -23,6 +25,12 @@ function SpaceJunk()
 		return _editor;
 	};
 }
+
+var _connection = null;
+
+var _instance = new SpaceJunk();
+
+SpaceJunk.prototype.socketURL = 'ws://localhost:9038';
 
 
 SpaceJunk.prototype.setFile = function(name)
@@ -41,13 +49,11 @@ SpaceJunk.prototype.setFile = function(name)
 	}).then(function(result)
 	{
 		self.editor().setValue(result);
+		self.editor().clearSelection();
 		$('#editor-title').html(name);
 		return RSVP.Promise.resolve();
 	});
 };
-
-
-SpaceJunk.prototype.sendValue
 
 
 /**
@@ -56,34 +62,18 @@ SpaceJunk.prototype.sendValue
  */
 SpaceJunk.prototype.init = function()
 {
-	var url = 'ws://localhost:9038';
+	_connection = new Connection();
 
-	var socket = new WebSocket(url);
-
-	socket.onopen = function(evt)
-	{
-		console.log('opened!');
-	};
-
-	socket.onclose = function(evt)
-	{
-		console.log('closed!');
-	};
-
-	socket.onmessage = function(evt)
-	{
-		console.log('got a message: ' + evt.data);
-	};
-
-	socket.onerror = function(evt)
-	{
-		console.log('error! ' + evt.data);
-	};
+	_connection.open(this.socketURL);
 
 	var edit = this.editor();
 
 	edit.setTheme('ace/theme/monokai');
+	edit.setShowInvisibles(true);
+	edit.setHighlightActiveLine(true);
 	edit.getSession().setMode('ace/mode/javascript');
+	edit.getSession().setUseSoftTabs(false);
+	edit.getSession().setTabSize(2);
 
 	this.setFile('sample');
 
@@ -91,34 +81,20 @@ SpaceJunk.prototype.init = function()
 
 	statusContainer.append($('<button>').html('send').on('click', function()
 	{
-		var val = edit.getValue();
-
-		if (val)
-		{
-			socket.send(val);
-		} else {
-			console.warn('Not sending empty val.');
-		}
-
+		_connection.send(_instance.editor().getValue());
 	}));
 
 	statusContainer.append($('<button>').html('restart').on('click', function()
 	{
-		socket.close();
-		socket = new WebSocket(url);
-
-		socket.onerror = function(evt)
-		{
-			console.error(evt);
-			console.log(evt.data);
-		};
+		_connection.close();
+		_connection.open(_instance.socketURL);
 	}));
 
 	return true;
 };
 
 
-return SpaceJunk;
+return _instance;
 
 
 });

@@ -8,6 +8,6 @@
 		x = x * (1 + i);
 	}
 
-	spacejunk.log(x.toString());
+	spacejunk.log(x);
 
 })();

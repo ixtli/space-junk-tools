@@ -5,9 +5,9 @@ require(['config'], function(config)
 	requirejs.config(config);
 
 	// Initialize the application
-	require(['core'], function(SpaceJunk)
+	require(['core'], function(instance)
 	{
-		window.sj = new SpaceJunk();
+		window.sj = instance;
 		window.sj.init();
 	});
 });
